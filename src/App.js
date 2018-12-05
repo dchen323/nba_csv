@@ -1,25 +1,37 @@
-import React, { Component } from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { Component } from "react";
+import Papa from "papaparse";
+import "./App.css";
+import data from "./data/nba.csv";
 
 class App extends Component {
+  constructor() {
+    super();
+    this.state = {
+      data: []
+    };
+
+    this.parseData = this.parseData.bind(this);
+  }
+
+  componentDidMount() {
+    this.parseData();
+  }
+
+  parseData() {
+    Papa.parse(data, {
+      header: true,
+      download: true,
+      complete: results => {
+        this.setState({ data: results.data });
+      }
+    });
+  }
+
   render() {
+    console.log(this.state.data);
     return (
       <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </header>
+        <h1>Filler</h1>
       </div>
     );
   }
