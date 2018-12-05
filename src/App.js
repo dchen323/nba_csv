@@ -12,15 +12,15 @@ class App extends Component {
       teams: []
     };
 
-    this.parseData = this.parseData.bind(this);
+    this.parseCSV = this.parseCSV.bind(this);
     this.parseTeam = this.parseTeam.bind(this);
   }
 
   componentDidMount() {
-    this.parseData();
+    this.parseCSV();
   }
 
-  parseData() {
+  parseCSV() {
     Papa.parse(data, {
       header: true,
       download: true,
