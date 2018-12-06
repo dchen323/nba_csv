@@ -11,7 +11,8 @@ export default class DropdownItem extends Component {
     this.onClick = this.onClick.bind(this);
   }
 
-  onClick() {
+  onClick(e) {
+    this.props.filterTeams(e.target.text);
     this.setState(prevState => ({ disabled: !prevState.disabled }));
   }
 
