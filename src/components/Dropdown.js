@@ -1,13 +1,17 @@
 import React, { Component } from "react";
 import { DropdownButton } from "react-bootstrap";
 import DropdownItem from "./DropdownItem";
+import Chart from "./Chart";
 
 export default class Dropdown extends Component {
   constructor(props) {
     super(props);
-
+    this.state = {
+      filteredData: [],
+      teamList: []
+    };
     this.getDropdownItems = this.getDropdownItems.bind(this);
-    this.filterTeams = this.filterTeams.bind(this);
+    this.filterData = this.filterData.bind(this);
   }
 
   getDropdownItems() {
@@ -16,14 +20,14 @@ export default class Dropdown extends Component {
         eventKey={idx}
         key={idx}
         item={item}
-        filterTeams={this.filterTeams}
+        filterData={this.filterData}
       />
     ));
 
     return menuItems;
   }
 
-  filterTeams(name) {
+  filterData(name) {
     const visitorData = this.props.data.filter(data => data.Visitor === name);
 
     const homeData = this.props.data.filter(data => data.Home === name);
@@ -32,20 +36,33 @@ export default class Dropdown extends Component {
     const homeScore = this.filterScore(homeData, "PTS/H");
 
     const allFilteredScore = [...visitorScore, ...homeScore].sort(
-      (a, b) => a.date - b.date
+      (a, b) => new Date(a.date) - new Date(b.date)
     );
 
-    console.log(allFilteredScore);
+    const newEntry = [{ name, data: allFilteredScore }];
+
+    this.setState(prevState => {
+      let newState = [...prevState.filteredData, ...newEntry];
+
+      return {
+        filteredData: newState,
+        teamList: [...prevState.teamList, name]
+      };
+    });
   }
 
   filterScore(data, status) {
-    const formatedData = [];
+    const graphData = [];
     for (let i = 0; i < data.length; i++) {
-      const results = { date: data[i].Date, value: data[i][status] };
-      formatedData.push(results);
+      const entries = {
+        date: data[i].Date,
+        score: data[i][status]
+      };
+
+      graphData.push(entries);
     }
 
-    return formatedData;
+    return graphData;
   }
 
   render() {
@@ -59,6 +76,7 @@ export default class Dropdown extends Component {
         >
           {dropdownItems}
         </DropdownButton>
+        <Chart data={this.state.filteredData} teamList={this.state.teamList} />
       </div>
     );
   }

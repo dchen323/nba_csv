@@ -3,7 +3,7 @@ import Papa from "papaparse";
 import "./App.css";
 import data from "./data/nba.csv";
 import Dropdown from "./components/Dropdown";
-import Chart from "./components/Chart";
+import Test from "./components/test";
 
 class App extends Component {
   constructor() {
@@ -55,7 +55,7 @@ class App extends Component {
           items={this.state.teams}
           data={this.state.data}
         />
-        <Chart />
+        {/* <test/> */}
       </div>
     );
   }

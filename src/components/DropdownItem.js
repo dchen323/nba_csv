@@ -12,7 +12,7 @@ export default class DropdownItem extends Component {
   }
 
   onClick(e) {
-    this.props.filterTeams(e.target.text);
+    this.props.filterData(e.target.text);
     this.setState(prevState => ({ disabled: !prevState.disabled }));
   }
 
