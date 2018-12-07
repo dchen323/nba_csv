@@ -3,7 +3,6 @@ import Papa from "papaparse";
 import "./App.css";
 import data from "./data/nba.csv";
 import Dropdown from "./components/Dropdown";
-import Test from "./components/test";
 
 class App extends Component {
   constructor() {

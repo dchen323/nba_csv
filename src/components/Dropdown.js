@@ -55,7 +55,7 @@ export default class Dropdown extends Component {
     const graphData = [];
     for (let i = 0; i < data.length; i++) {
       const entries = {
-        date: data[i].Date,
+        date: new Date(data[i].Date).getTime(),
         score: data[i][status]
       };
 
