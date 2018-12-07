@@ -21,6 +21,7 @@ export default class Chart extends Component {
     };
 
     this.getTicks = this.getTicks.bind(this);
+    this.mouseOver = this.mouseOver.bind(this);
   }
 
   componentDidUpdate(prevProps) {
@@ -55,8 +56,8 @@ export default class Chart extends Component {
     return moment(time).format("MM/DD/YY");
   }
 
-  numberFormat(date) {
-    return new Date(date).getTime();
+  mouseOver(e) {
+    console.log(e);
   }
 
   render() {
@@ -80,10 +81,11 @@ export default class Chart extends Component {
           ticks={this.state.ticks}
           ticksCount={this.state.index}
           tickFormatter={this.dateFormat}
-          name="date"
+          onMouseOver={this.onMouseOver}
+          name="dateTime"
         />
         <YAxis dataKey="score" />
-        <Tooltip />
+        <Tooltip labelFormatter={this.dateFormat} />
         <Legend />
         {lines}
       </LineChart>
