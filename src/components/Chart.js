@@ -8,20 +8,33 @@ import {
   Legend,
   Line
 } from "recharts";
-
 import moment from "moment";
+import randomColor from "randomcolor";
 
 export default class Chart extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      range: [],
-      index: 0,
-      ticks: []
+      ticks: [],
+      colors: []
     };
 
     this.getTicks = this.getTicks.bind(this);
-    this.mouseOver = this.mouseOver.bind(this);
+  }
+
+  componentDidMount() {
+    const colors = [];
+    while (colors.length < 30) {
+      let color = randomColor({
+        luminosity: "dark",
+        alpha: 1
+      });
+      if (colors.indexOf(color) === -1) {
+        colors.push(color);
+      }
+    }
+
+    this.setState({ colors });
   }
 
   componentDidUpdate(prevProps) {
@@ -45,8 +58,6 @@ export default class Chart extends Component {
         .filter((date, idx, arr) => arr.indexOf(date) === idx);
 
       return {
-        range: [newTicks[0], newTicks[newTicks.length - 1]],
-        index: newTicks.length,
         ticks: newTicks
       };
     });
@@ -56,14 +67,16 @@ export default class Chart extends Component {
     return moment(time).format("MM/DD/YY");
   }
 
-  mouseOver(e) {
-    console.log(e);
-  }
-
   render() {
     const lines = this.props.data.map((team, idx) => {
       return (
-        <Line key={idx} dataKey="score" data={team.data} name={team.name} />
+        <Line
+          key={idx}
+          dataKey="score"
+          data={team.data}
+          name={team.name}
+          stroke={this.state.colors[idx]}
+        />
       );
     });
 
@@ -76,13 +89,14 @@ export default class Chart extends Component {
         <CartesianGrid strokeDasharray="3 3" />
         <XAxis
           dataKey="date"
-          domain={this.state.range}
+          domain={[
+            this.state.ticks[0],
+            this.state.ticks[this.state.ticks.length - 1]
+          ]}
           type="number"
           ticks={this.state.ticks}
-          ticksCount={this.state.index}
+          ticksCount={this.state.ticks.length}
           tickFormatter={this.dateFormat}
-          onMouseOver={this.onMouseOver}
-          name="dateTime"
         />
         <YAxis dataKey="score" />
         <Tooltip labelFormatter={this.dateFormat} />

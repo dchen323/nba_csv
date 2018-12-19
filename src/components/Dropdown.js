@@ -8,10 +8,12 @@ export default class Dropdown extends Component {
     super(props);
     this.state = {
       filteredData: [],
-      teamList: []
+      teamList: [],
+      status: "Both"
     };
     this.getDropdownItems = this.getDropdownItems.bind(this);
     this.filterData = this.filterData.bind(this);
+    this.onClick = this.onClick.bind(this);
   }
 
   getDropdownItems() {
@@ -35,11 +37,18 @@ export default class Dropdown extends Component {
     const visitorScore = this.filterScore(visitorData, "PTS/V");
     const homeScore = this.filterScore(homeData, "PTS/H");
 
-    const allFilteredScore = [...visitorScore, ...homeScore].sort(
-      (a, b) => new Date(a.date) - new Date(b.date)
-    );
+    let filteredScore;
+    if (this.state.status === "Both") {
+      filteredScore = [...visitorScore, ...homeScore].sort(
+        (a, b) => new Date(a.date) - new Date(b.date)
+      );
+    } else if (this.state.status === "Home") {
+      filteredScore = homeScore;
+    } else {
+      filteredScore = visitorScore;
+    }
 
-    const newEntry = [{ name, data: allFilteredScore }];
+    const newEntry = [{ name, data: filteredScore }];
 
     this.setState(prevState => {
       let newState = [...prevState.filteredData, ...newEntry];
@@ -65,6 +74,16 @@ export default class Dropdown extends Component {
     return graphData;
   }
 
+  onClick(e) {
+    this.setState({ status: e.target.innerText });
+    setTimeout(() => {
+      console.log(this.state.status);
+      for (let i = 0; i < this.state.teamList; i++) {
+        this.filterData(this.state.teamList[i]);
+      }
+    }, 0);
+  }
+
   render() {
     const dropdownItems = this.getDropdownItems();
     return (
@@ -77,6 +96,17 @@ export default class Dropdown extends Component {
           {dropdownItems}
         </DropdownButton>
         <Chart data={this.state.filteredData} teamList={this.state.teamList} />
+        <div className="btn-group" role="group" aria-label="...">
+          <button type="button" className="btn" onClick={this.onClick}>
+            Home
+          </button>
+          <button type="button" className="btn" onClick={this.onClick}>
+            Away
+          </button>
+          <button type="button" className="btn" onClick={this.onClick}>
+            Both
+          </button>
+        </div>
       </div>
     );
   }

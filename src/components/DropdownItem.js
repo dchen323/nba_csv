@@ -5,15 +5,21 @@ export default class DropdownItem extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      disabled: false
+      disabled: false,
+      clicked: false
     };
 
     this.onClick = this.onClick.bind(this);
   }
 
   onClick(e) {
-    this.props.filterData(e.target.text);
-    this.setState(prevState => ({ disabled: !prevState.disabled }));
+    if (!this.state.clicked) {
+      this.props.filterData(e.target.text);
+    }
+    this.setState(prevState => ({
+      disabled: true,
+      clicked: true
+    }));
   }
 
   render() {
